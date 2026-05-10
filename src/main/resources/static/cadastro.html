@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Veículo</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 40px 16px;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        .topo { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+        .btn-voltar {
+            background: #e2e8f0;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2d3748;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .btn-voltar:hover { background: #cbd5e0; }
+        h1 { font-size: 22px; color: #1a202c; }
+        .grupo { margin-bottom: 20px; }
+        label { display: block; font-size: 14px; font-weight: 600; color: #4a5568; margin-bottom: 6px; }
+        input, select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #2d3748;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus { border-color: #2b6cb0; }
+        .linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .btn-nova-marca {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: white;
+            color: #2b6cb0;
+            border: 1.5px solid #2b6cb0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-nova-marca:hover { background: #ebf4ff; }
+        .btn-cadastrar {
+            width: 100%;
+            padding: 14px;
+            background: #2b6cb0;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+        .btn-cadastrar:hover { background: #2c5282; }
+        .mensagem { margin-top: 16px; padding: 12px; border-radius: 8px; font-size: 14px; text-align: center; display: none; }
+        .mensagem.sucesso { background: #c6f6d5; color: #276749; display: block; }
+        .mensagem.erro { background: #fed7d7; color: #9b2c2c; display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topo">
+            <a href="index.html" class="btn-voltar">&#8592; Voltar</a>
+            <h1>Cadastrar Veículo</h1>
+        </div>
+        <form id="formCadastro">
+            <div class="grupo">
+                <label for="marca">Marca</label>
+                <select id="marca" required>
+                    <option value="">Selecione a marca...</option>
+                </select>
+                <a href="cadastro-marca.html" class="btn-nova-marca">+ Cadastrar nova marca</a>
+            </div>
+            <div class="grupo">
+                <label for="modelo">Modelo</label>
+                <input type="text" id="modelo" placeholder="Ex: Corolla XEI" required>
+            </div>
+            <div class="linha-dupla">
+                <div class="grupo">
+                    <label for="ano">Ano de Fabricação</label>
+                    <input type="number" id="ano" placeholder="Ex: 2023" min="1900" max="2100" required>
+                </div>
+                <div class="grupo">
+                    <label for="cor">Cor</label>
+                    <input type="text" id="cor" placeholder="Ex: Prata" required>
+                </div>
+            </div>
+            <div class="linha-dupla">
+                <div class="grupo">
+                    <label for="preco">Preço (R$)</label>
+                    <input type="number" id="preco" placeholder="Ex: 140000" min="0" step="0.01" required>
+                </div>
+                <div class="grupo">
+                    <label for="quilometragem">Quilometragem (km)</label>
+                    <input type="number" id="quilometragem" placeholder="Ex: 15000" min="0" required>
+                </div>
+            </div>
+            <div class="grupo">
+                <label for="status">Status</label>
+                <select id="status" required>
+                    <option value="">Selecione o status...</option>
+                    <option value="Disponível">Disponível</option>
+                    <option value="Vendido">Vendido</option>
+                    <option value="Reservado">Reservado</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-cadastrar">Cadastrar Veículo</button>
+        </form>
+        <div id="mensagem" class="mensagem"></div>
+    </div>
+    <script>
+        async function carregarMarcas() {
+            try {
+                const res = await fetch('/marcas');
+                const marcas = await res.json();
+                const sel = document.getElementById('marca');
+                marcas.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.id;
+                    opt.textContent = m.nome;
+                    sel.appendChild(opt);
+                });
+            } catch (e) {
+                console.error('Erro ao carregar marcas', e);
+            }
+        }
+
+        document.getElementById('formCadastro').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const corpo = {
+                marca: { id: parseInt(document.getElementById('marca').value) },
+                modelo: document.getElementById('modelo').value,
+                anoFabricacao: parseInt(document.getElementById('ano').value),
+                cor: document.getElementById('cor').value,
+                preco: parseFloat(document.getElementById('preco').value),
+                quilometragem: parseInt(document.getElementById('quilometragem').value),
+                status: document.getElementById('status').value
+            };
+            try {
+                const res = await fetch('/veiculos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(corpo)
+                });
+                const msg = document.getElementById('mensagem');
+                if (res.ok) {
+                    msg.className = 'mensagem sucesso';
+                    msg.textContent = 'Veículo cadastrado com sucesso!';
+                    this.reset();
+                    carregarMarcas();
+                } else {
+                    msg.className = 'mensagem erro';
+                    msg.textContent = 'Erro ao cadastrar veículo. Tente novamente.';
+                }
+                setTimeout(() => { msg.className = 'mensagem'; msg.textContent = ''; }, 4000);
+            } catch (e) {
+                const msg = document.getElementById('mensagem');
+                msg.className = 'mensagem erro';
+                msg.textContent = 'Erro de conexão com o servidor.';
+            }
+        });
+
+        carregarMarcas();
+    </script>
+</body>
+</html>

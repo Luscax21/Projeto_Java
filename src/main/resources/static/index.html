@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estoque de Veículos</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            padding: 60px 50px;
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+        }
+        .icone { font-size: 56px; margin-bottom: 16px; }
+        h1 { font-size: 26px; color: #1a202c; margin-bottom: 8px; }
+        p { color: #718096; margin-bottom: 40px; font-size: 15px; }
+        .botoes { display: flex; flex-direction: column; gap: 16px; }
+        .btn {
+            display: block;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.1s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primario { background: #2b6cb0; color: white; }
+        .btn-primario:hover { background: #2c5282; }
+        .btn-secundario { background: #e2e8f0; color: #2d3748; }
+        .btn-secundario:hover { background: #cbd5e0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icone">&#128664;</div>
+        <h1>Estoque de Veículos</h1>
+        <p>Gerencie o cadastro e a consulta de veículos</p>
+        <div class="botoes">
+            <a href="cadastro.html" class="btn btn-primario">+ Cadastrar Veículo</a>
+            <a href="cadastro-marca.html" class="btn btn-secundario">&#127991; Cadastrar Marca</a>
+            <a href="consulta.html" class="btn btn-secundario">&#128269; Consultar Veículos</a>
+        </div>
+    </div>
+</body>
+</html>
